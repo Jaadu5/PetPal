@@ -29,7 +29,7 @@ def load_user(user_id):
 
 app.secret_key='mridu'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:@localhost:3306/db'
-app.config['SQLALCHEMY_DATABASE_URI']='mysql://uhsulxwk05o6tkx0:bqBWcy2nmDSdTCTpqEEy@bjc1hkstquzzcxplh12y-mysql.services.clever-cloud.com:3306/bjc1hkstquzzcxplh12y'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql+mysqlconnector://uhsulxwk05o6tkx0:bqBWcy2nmDSdTCTpqEEy@bjc1hkstquzzcxplh12y-mysql.services.clever-cloud.com:3306/bjc1hkstquzzcxplh12y'
 
 db=SQLAlchemy(app)
 
