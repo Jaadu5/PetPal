@@ -1,0 +1,457 @@
+{% extends "base.html" %}
+
+{% block title %}{% endblock title %}
+
+{% block body %}
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #f8f6f0 0%, #e8e2d5 100%);
+    min-height: 100vh;
+    color: #2c3e50;
+    line-height: 1.6;
+  }
+
+  .hero-section {
+    padding: 80px 0;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    margin: 40px 20px;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
+    animation: shimmer 4s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(3deg); }
+  }
+
+  .hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-icon {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px;
+    box-shadow: 0 15px 40px rgba(212, 175, 55, 0.3);
+  }
+
+  .hero-icon i {
+    font-size: 48px;
+    color: #1a365d;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #1a365d;
+    margin-bottom: 25px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .hero-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.4rem;
+    color: #5a6c7d;
+    font-weight: 300;
+    margin-bottom: 40px;
+    line-height: 1.8;
+  }
+
+  .hero-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .luxury-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 36px;
+    border-radius: 50px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .luxury-btn.primary {
+    background: linear-gradient(135deg, #1a365d 0%, #2d5a87 100%);
+    color: #ffffff;
+  }
+
+  .luxury-btn.secondary {
+    background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+    color: #1a365d;
+  }
+
+  .luxury-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .luxury-btn:hover::before {
+    left: 100%;
+  }
+
+  .luxury-btn:hover {
+    transform: translateY(-3px);
+    border-color: #d4af37;
+  }
+
+  .luxury-btn.primary:hover {
+    box-shadow: 0 15px 40px rgba(26, 54, 93, 0.3);
+  }
+
+  .luxury-btn.secondary:hover {
+    box-shadow: 0 15px 40px rgba(212, 175, 55, 0.3);
+  }
+
+  .categories-section {
+    padding: 80px 0;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: #1a365d;
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+  }
+
+  .category-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .category-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+    border-color: rgba(212, 175, 55, 0.3);
+  }
+
+  .category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #d4af37 0%, #f4d03f 100%);
+  }
+
+  .category-image {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .category-card:hover .category-image {
+    transform: scale(1.05);
+  }
+
+  .category-content {
+    padding: 30px;
+  }
+
+  .category-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #1a365d;
+    margin-bottom: 20px;
+  }
+
+  .category-btn {
+    background: linear-gradient(135deg, #1a365d 0%, #2d5a87 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .category-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .category-btn:hover::before {
+    left: 100%;
+  }
+
+  .category-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(26, 54, 93, 0.3);
+  }
+
+  .footer {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    margin: 40px 20px 20px;
+    border-radius: 24px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+  }
+
+  .footer-link {
+    color: #d4af37;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .footer-link:hover {
+    color: #1a365d;
+  }
+
+  @media (max-width: 768px) {
+    .hero-section {
+      margin: 20px 10px;
+      padding: 60px 0;
+    }
+
+    .hero-content {
+      padding: 0 20px;
+    }
+
+    .hero-title {
+      font-size: 2.8rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+    }
+
+    .hero-buttons {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .luxury-btn {
+      width: 100%;
+      max-width: 280px;
+      justify-content: center;
+    }
+
+    .categories-section {
+      padding: 60px 10px;
+    }
+
+    .categories-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .section-title {
+      font-size: 2.2rem;
+    }
+
+    .footer {
+      margin: 20px 10px;
+      padding: 30px 20px;
+    }
+  }
+</style>
+
+<body>
+  <main>
+    <section class="hero-section">
+      <div class="hero-content">
+        <div class="hero-icon">
+          <i class="fas fa-paw"></i>
+        </div>
+        <h1 class="hero-title">Everything your pet needs.</h1>
+        <p class="hero-subtitle">Welcome to PetPals. Your luxury boutique for every product and service your beloved companion requires.</p>
+        <div class="hero-buttons">
+          <a href="/product" class="luxury-btn primary">
+            <i class="fas fa-shopping-bag"></i>
+            Browse Premium Products
+          </a>
+          <a href="/service" class="luxury-btn secondary">
+            <i class="fas fa-spa"></i>
+            Choose a Service
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="categories-section">
+      <h2 class="section-title">Our Collections</h2>
+      <div class="categories-grid">
+        <div class="category-card">
+          <img src="https://media.istockphoto.com/id/678257014/photo/dog-food-in-the-bowl-and-bone-shaped-biscuits.jpg?s=612x612&w=0&k=20&c=lLzJYxxglUmtXOrlUqdtHbB-2p7q5NBSYZ4EI6bL8Fc=" 
+               class="category-image" 
+               alt="Premium Pet Food">
+          <div class="category-content">
+            <h3 class="category-title">Premium Food</h3>
+            <button type="button" class="category-btn" onclick="window.location.href='{{ url_for('product') }}'">
+              <i class="fas fa-eye"></i>
+              View Collection
+            </button>
+
+          </div>
+        </div>
+
+        <div class="category-card">
+          <img src="https://www.sleepyhollowanimalhospital.com/wp-content/uploads/2020/07/choosing-safe-pet-toys-strip1.jpg" 
+               class="category-image" 
+               alt="Luxury Pet Toys">
+          <div class="category-content">
+            <h3 class="category-title">Designer Toys</h3>
+            <button type="button" class="category-btn" onclick="window.location.href='{{ url_for('product') }}'">
+              <i class="fas fa-eye"></i>
+              View Collection
+            </button>
+          </div>
+        </div>
+
+        <div class="category-card">
+          <img src="https://images.livemint.com/img/2022/07/27/1140x641/dressed_up_dogs_Photo_by_Karsten_Winegeart_on_Unsplash_1658911650097_1658911657309_1658911657309.jpg" 
+               class="category-image" 
+               alt="Luxury Pet Accessories">
+          <div class="category-content">
+            <h3 class="category-title">Luxury Accessories</h3>
+            <button type="button" class="category-btn" onclick="window.location.href='{{ url_for('product') }}'">
+              <i class="fas fa-eye"></i>
+              View Collection
+            </button>
+          </div>
+        </div>
+
+        <div class="category-card">
+          <img src="https://clawsjunction.com/wp-content/uploads/2019/04/cat-clothes.jpg" 
+               class="category-image" 
+               alt="Designer Pet Clothes">
+          <div class="category-content">
+            <h3 class="category-title">Designer Clothes</h3>
+            <button type="button" class="category-btn" onclick="window.location.href='{{ url_for('product') }}'">
+              <i class="fas fa-eye"></i>
+              View Collection
+            </button>
+          </div>
+        </div>
+
+        <div class="category-card">
+          <img src="https://media.licdn.com/dms/image/C5612AQFV_cxaI6f-9A/article-cover_image-shrink_600_2000/0/1520228209985?e=2147483647&v=beta&t=Kfaz7MIHgH-aQ5LoDZs7YbeQEhdkSSJoz-PKVeT4oHE" 
+               class="category-image" 
+               alt="Premium Grooming">
+          <div class="category-content">
+            <h3 class="category-title">Grooming Essentials</h3>
+            <button type="button" class="category-btn" onclick="window.location.href='{{ url_for('product') }}'">
+              <i class="fas fa-eye"></i>
+              View Collection
+            </button>
+          </div>
+        </div>
+
+        <div class="category-card">
+          <img src="https://static.wixstatic.com/media/11062b_ed1e8862f3dd46e9b03e00493b3ace15~mv2.jpg/v1/fill/w_640,h_438,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/11062b_ed1e8862f3dd46e9b03e00493b3ace15~mv2.jpg" 
+               class="category-image" 
+               alt="Premium Pet Services">
+          <div class="category-content">
+            <h3 class="category-title">Boutique Services</h3>
+            <button type="button" class="category-btn" onclick="window.location.href='{{ url_for('service') }}'">
+              <i class="fas fa-eye"></i>
+              View Collection
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>
+      <a href="#" class="footer-link">
+        <i class="fas fa-arrow-up"></i>
+        Back to top
+      </a>
+    </p>
+  </footer>
+</body>
+
+{% endblock body %}

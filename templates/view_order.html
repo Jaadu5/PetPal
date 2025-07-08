@@ -1,0 +1,553 @@
+{% extends "base.html" %}
+
+{% block title %}
+Order History
+{% endblock title %}
+
+{% block body %}
+<style>
+    :root {
+        --cream-50: #fefcf8;
+        --cream-100: #fdf8f0;
+        --cream-200: #faf3e8;
+        --taupe-100: #f5f2ed;
+        --taupe-200: #e8e2d8;
+        --taupe-300: #d6ccbf;
+        --taupe-400: #b8a894;
+        --navy-800: #1e293b;
+        --navy-900: #0f172a;
+        --gold-400: #d4af37;
+        --gold-500: #c29b26;
+        --gold-600: #a67c00;
+        --shadow-soft: 0 4px 20px rgba(15, 23, 42, 0.08);
+        --shadow-medium: 0 8px 32px rgba(15, 23, 42, 0.12);
+        --shadow-strong: 0 16px 48px rgba(15, 23, 42, 0.16);
+    }
+
+    .order-history-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, var(--cream-50) 0%, var(--cream-100) 50%, var(--taupe-100) 100%);
+        min-height: 100vh;
+        color: var(--navy-800);
+    }
+
+    .order-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 3rem 0;
+        position: relative;
+    }
+
+    .order-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--gold-400), var(--gold-500));
+        border-radius: 2px;
+    }
+
+    .order-header h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5rem;
+        font-weight: 600;
+        color: var(--navy-900);
+        margin-bottom: 1rem;
+        letter-spacing: -0.02em;
+        position: relative;
+    }
+
+    .order-header h1::before {
+        content: '\f521';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        color: var(--gold-400);
+        margin-right: 0.5rem;
+        font-size: 0.9em;
+    }
+
+    .order-header p {
+        font-size: 1.2rem;
+        color: var(--taupe-400);
+        font-weight: 400;
+        font-style: italic;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .search-filter {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 3rem;
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+        box-shadow: var(--shadow-soft);
+        position: relative;
+    }
+
+    .search-filter::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-400), transparent);
+    }
+
+    .search-input {
+        flex: 1;
+        min-width: 280px;
+        padding: 1rem 1.5rem;
+        border: 2px solid var(--taupe-200);
+        border-radius: 12px;
+        font-size: 1rem;
+        background: var(--cream-50);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: 'Inter', sans-serif;
+        font-weight: 400;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--gold-400);
+        box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
+        background: white;
+    }
+
+    .filter-select {
+        padding: 1rem 1.5rem;
+        border: 2px solid var(--taupe-200);
+        border-radius: 12px;
+        font-size: 1rem;
+        background: var(--cream-50);
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+        color: var(--navy-800);
+        min-width: 160px;
+    }
+
+    .filter-select:focus {
+        outline: none;
+        border-color: var(--gold-400);
+        box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
+        background: white;
+    }
+
+    .orders-grid {
+        display: grid;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .order-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 24px;
+        padding: 2.5rem;
+        box-shadow: var(--shadow-medium);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .order-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--gold-400), var(--gold-500), var(--gold-600));
+        border-radius: 24px 24px 0 0;
+    }
+
+    .order-card::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+        pointer-events: none;
+    }
+
+    .order-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-strong);
+        border-color: rgba(212, 175, 55, 0.2);
+    }
+
+    .order-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .order-id {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--navy-900);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        letter-spacing: -0.01em;
+    }
+
+    .order-id::before {
+        content: '\f543';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        color: var(--gold-400);
+        font-size: 1.2em;
+    }
+
+    .status-badge {
+        padding: 0.75rem 1.5rem;
+        border-radius: 25px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .status-badge::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .status-badge:hover::before {
+        left: 100%;
+    }
+
+    .status-delivered {
+        background: linear-gradient(135deg, #059669, #10b981);
+        color: white;
+        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+    }
+
+    .status-delivered::after {
+        content: '\f058';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+    }
+
+    .status-pending {
+        background: linear-gradient(135deg, #d97706, #f59e0b);
+        color: white;
+        box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+    }
+
+    .status-pending::after {
+        content: '\f017';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+    }
+
+    .status-shipped {
+        background: linear-gradient(135deg, #2563eb, #3b82f6);
+        color: white;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .status-shipped::after {
+        content: '\f0d1';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+    }
+
+    .status-cancelled {
+        background: linear-gradient(135deg, #dc2626, #ef4444);
+        color: white;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+
+    .status-cancelled::after {
+        content: '\f057';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+    }
+
+    .order-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1.5rem;
+        background: rgba(245, 242, 237, 0.6);
+        border-radius: 16px;
+        border: 1px solid rgba(216, 204, 191, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .detail-item:hover {
+        background: rgba(245, 242, 237, 0.8);
+        transform: translateY(-2px);
+    }
+
+    .detail-label {
+        font-size: 0.9rem;
+        color: var(--taupe-400);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .detail-value {
+        font-size: 1.1rem;
+        color: var(--navy-800);
+        font-weight: 600;
+    }
+
+    .product-name {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.3rem;
+        color: var(--navy-900);
+        font-weight: 500;
+        line-height: 1.4;
+        font-style: italic;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 5rem 2rem;
+        color: var(--taupe-400);
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 24px;
+        border: 2px dashed var(--taupe-200);
+    }
+
+    .empty-state::before {
+        content: '\f002';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        font-size: 4rem;
+        color: var(--gold-400);
+        display: block;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-state h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        margin-bottom: 0.75rem;
+        color: var(--navy-800);
+    }
+
+    .empty-state p {
+        font-size: 1.1rem;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+        .order-history-container {
+            padding: 1.5rem;
+        }
+
+        .order-header h1 {
+            font-size: 2.8rem;
+        }
+
+        .order-header p {
+            font-size: 1.1rem;
+        }
+        
+        .order-card-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .order-details {
+            grid-template-columns: 1fr;
+        }
+        
+        .search-filter {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 1.5rem;
+        }
+
+        .search-input, .filter-select {
+            min-width: auto;
+        }
+
+        .order-card {
+            padding: 2rem;
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .order-card {
+        animation: fadeInUp 0.6s ease forwards;
+    }
+</style>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="order-history-container">
+    <div class="order-header">
+        <h1>Order History</h1>
+        <p>Your curated collection of premium pet essentials</p>
+    </div>
+
+    <div class="search-filter">
+        <input type="text" class="search-input" placeholder="Search orders..." id="searchInput">
+        <select class="filter-select" id="statusFilter">
+            <option value="">All Status</option>
+            <option value="delivered">Delivered</option>
+            <option value="pending">Pending</option>
+            <option value="shipped">Shipped</option>
+            <option value="cancelled">Cancelled</option>
+        </select>
+    </div>
+
+    <div class="orders-grid" id="ordersGrid">
+        {% if orders %}
+            {% for order_info in orders %}
+            <div class="order-card" data-status="{{ order_info.order.Status|lower }}">
+                <div class="order-card-header">
+                    <div class="order-id">
+                        {{ order_info.order.Order_ID }}
+                    </div>
+                    <div class="status-badge status-{{ order_info.order.Status|lower }}">
+                        {{ order_info.order.Status|title }}
+                    </div>
+                </div>
+                <div class="order-details">
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fas fa-calendar-alt"></i>
+                            Order Date
+                        </div>
+                        <div class="detail-value">{{ order_info.order.Order_Date }}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fas fa-boxes"></i>
+                            Quantity
+                        </div>
+                        <div class="detail-value">{{ order_info.order.Quantity }} Item{% if order_info.order.Quantity != 1 %}s{% endif %}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">
+                            <i class="fas fa-gem"></i>
+                            Product
+                        </div>
+                        <div class="detail-value product-name">{{ order_info.product_name }}</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <h3>No orders found</h3>
+                <p>You haven't placed any orders yet. Discover our premium pet collection to get started.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="empty-state" id="emptyState" style="display: none;">
+        <h3>No orders found</h3>
+        <p>Try adjusting your search or filter criteria</p>
+    </div>
+</div>
+
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const ordersGrid = document.getElementById('ordersGrid');
+    const emptyState = document.getElementById('emptyState');
+
+    function filterOrders() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const statusFilterValue = statusFilter.value.toLowerCase();
+        const orderCards = document.querySelectorAll('.order-card');
+        let visibleCount = 0;
+
+        orderCards.forEach(card => {
+            const orderId = card.querySelector('.order-id').textContent.toLowerCase();
+            const productName = card.querySelector('.product-name').textContent.toLowerCase();
+            const status = card.getAttribute('data-status');
+
+            const matchesSearch = orderId.includes(searchTerm) || productName.includes(searchTerm);
+            const matchesStatus = !statusFilterValue || status === statusFilterValue;
+
+            if (matchesSearch && matchesStatus) {
+                card.style.display = 'block';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // Show/hide empty state for filtered results
+        const hasOrders = document.querySelectorAll('.order-card').length > 0;
+        if (hasOrders && visibleCount === 0) {
+            emptyState.style.display = 'block';
+            ordersGrid.style.display = 'grid';
+        } else {
+            emptyState.style.display = 'none';
+            ordersGrid.style.display = 'grid';
+        }
+    }
+
+    if (searchInput && statusFilter) {
+        searchInput.addEventListener('input', filterOrders);
+        statusFilter.addEventListener('change', filterOrders);
+    }
+
+    // Add smooth scroll behavior
+    document.documentElement.style.scrollBehavior = 'smooth';
+</script>
+{% endblock body %}

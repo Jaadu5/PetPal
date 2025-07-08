@@ -1,0 +1,533 @@
+{% extends "base.html" %}
+
+{% block title %}
+Products
+{% endblock title %}
+
+{% block body %}
+<!-- Hero Section -->
+<div class="luxury-hero-section">
+  <div class="container">
+    <div class="hero-content text-center py-5">
+      <h1 class="hero-title">Curated Collection</h1>
+      <p class="hero-subtitle">Premium designer accessories and wellness essentials for your cherished companion</p>
+      <div class="hero-accent-line"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Products Grid -->
+<div class="container py-5">
+  <div class="row g-4">
+    {% for product in products %}
+    <div class="col-xl-4 col-lg-6 col-md-6">
+      <div class="luxury-product-card h-100">
+        <div class="product-card-inner">
+          <!-- Product Image Area -->
+          <div class="product-image-container">
+            <div class="product-image-placeholder">
+              <i class="fas fa-paw product-icon"></i>
+            </div>
+            <div class="product-overlay">
+              <div class="overlay-content">
+                <span class="premium-badge">Premium</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Product Content -->
+          <div class="product-content">
+            <div class="product-header">
+              <div class="product-category-wrapper">
+                <span class="product-category">{{ product.Pet_Category }}</span>
+              </div>
+              <div class="product-rating">
+                <div class="star-rating">
+                  {% for i in range(5) %}
+                    <i class="fas fa-star {% if i < product.Rating|int %}star-filled{% else %}star-empty{% endif %}"></i>
+                  {% endfor %}
+                </div>
+                <span class="rating-text">{{ product.Rating }}</span>
+              </div>
+            </div>
+            
+            <h3 class="product-title">{{ product.Name }}</h3>
+            <p class="product-description">{{ product.Description }}</p>
+            
+            <!-- Product Details -->
+            <div class="product-details">
+              <div class="detail-row">
+                <div class="detail-item">
+                  <i class="fas fa-tag detail-icon"></i>
+                  <span class="detail-label">Brand</span>
+                  <span class="detail-value">{{ product.Brand }}</span>
+                </div>
+                <div class="detail-item">
+                  <i class="fas fa-cube detail-icon"></i>
+                  <span class="detail-label">Type</span>
+                  <span class="detail-value">{{ product.Product_Type }}</span>
+                </div>
+                <div class="detail-item">
+                  <i class="fas fa-box detail-icon"></i>
+                  <span class="detail-label">Quantity</span>
+                  <span class="detail-value">{{ product.Quantity }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="product-actions">
+              <form action="{{ url_for('add_to_cart') }}" method="POST" class="action-form primary-action">
+                <input type="hidden" name="product_id" value="{{ product.Product_ID }}">
+                <button type="submit" class="btn btn-add-luxury">
+                  <i class="fas fa-shopping-bag"></i>
+                  <span>Add to Collection</span>
+                </button>
+              </form>
+              
+              <form action="{{ url_for('remove_from_cart_inProductPage') }}" method="POST" class="action-form secondary-action">
+                <input type="hidden" name="product_id" value="{{ product.Product_ID }}">
+                <button type="submit" class="btn btn-remove-luxury">
+                  <i class="fas fa-times"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* CSS Variables for Luxury Theme */
+:root {
+  --cream: #FAF7F2;
+  --warm-taupe: #C8B99C;
+  --rich-navy: #2C3E50;
+  --gold: #D4AF37;
+  --gold-light: #F4E4BC;
+  --gold-dark: #B8941F;
+  --text-primary: #2C3E50;
+  --text-secondary: #6C757D;
+  --white: #FFFFFF;
+  --shadow-light: rgba(44, 62, 80, 0.08);
+  --shadow-medium: rgba(44, 62, 80, 0.15);
+  --shadow-heavy: rgba(44, 62, 80, 0.25);
+}
+
+/* Hero Section */
+.luxury-hero-section {
+  background: linear-gradient(135deg, var(--cream) 0%, var(--warm-taupe) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.luxury-hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 4rem 0 !important;
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--rich-navy);
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  line-height: 1.6;
+}
+
+.hero-accent-line {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+/* Product Cards */
+.luxury-product-card {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px var(--shadow-light);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+  border: 1px solid rgba(200, 185, 156, 0.2);
+  position: relative;
+}
+
+.luxury-product-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 20px 48px var(--shadow-medium);
+}
+
+.luxury-product-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(212, 175, 55, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.luxury-product-card:hover::before {
+  opacity: 1;
+}
+
+.product-card-inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Product Image */
+.product-image-container {
+  position: relative;
+  height: 187px;
+  background: linear-gradient(135deg, var(--cream) 0%, var(--warm-taupe) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.product-image-placeholder {
+  color: var(--gold);
+  font-size: 3rem;
+  opacity: 0.6;
+}
+
+.product-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(44, 62, 80, 0.8);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.luxury-product-card:hover .product-overlay {
+  opacity: 1;
+}
+
+.premium-badge {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+  color: var(--rich-navy);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+}
+
+/* Product Content */
+.product-content {
+  padding: 1.7rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.85rem;
+}
+
+.product-category {
+  background: var(--rich-navy);
+  color: var(--white);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.star-rating {
+  display: flex;
+  gap: 2px;
+}
+
+.star-filled {
+  color: var(--gold);
+}
+
+.star-empty {
+  color: var(--warm-taupe);
+}
+
+.rating-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.product-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--rich-navy);
+  margin-bottom: 0.85rem;
+  line-height: 1.3;
+}
+
+.product-description {
+  font-family: 'Inter', sans-serif;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin-bottom: 1.3rem;
+  flex-grow: 1;
+}
+
+/* Product Details */
+.product-details {
+  margin-bottom: 1.7rem;
+}
+
+.detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(200, 185, 156, 0.2);
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-icon {
+  color: var(--gold);
+  font-size: 0.875rem;
+  width: 16px;
+  text-align: center;
+}
+
+.detail-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  min-width: 60px;
+}
+
+.detail-value {
+  font-family: 'Inter', sans-serif;
+  color: var(--rich-navy);
+  font-weight: 500;
+  font-size: 0.875rem;
+  margin-left: auto;
+}
+
+/* Action Buttons */
+.product-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.primary-action {
+  flex: 1;
+}
+
+.secondary-action {
+  flex: 0 0 auto;
+}
+
+.btn {
+  border: none;
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn-add-luxury {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+  color: var(--rich-navy);
+  padding: 12px 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  width: 100%;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+}
+
+.btn-add-luxury:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.4);
+}
+
+.btn-remove-luxury {
+  background: var(--white);
+  color: var(--text-secondary);
+  border: 2px solid rgba(200, 185, 156, 0.3);
+  padding: 12px 14px;
+  width: 46px;
+  height: 46px;
+}
+
+.btn-remove-luxury:hover {
+  background: var(--rich-navy);
+  color: var(--white);
+  border-color: var(--rich-navy);
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .hero-content {
+    padding: 3rem 0 !important;
+  }
+  
+  .product-content {
+    padding: 1.5rem;
+  }
+  
+  .product-actions {
+    flex-direction: column;
+  }
+  
+  .secondary-action {
+    flex: 1;
+  }
+  
+  .btn-remove-luxury {
+    width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .product-title {
+    font-size: 1.25rem;
+  }
+  
+  .detail-row {
+    gap: 8px;
+  }
+  
+  .detail-item {
+    padding: 8px 0;
+  }
+}
+
+/* Entrance Animation */
+@keyframes luxuryFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.luxury-product-card {
+  animation: luxuryFadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Stagger animation delays */
+.luxury-product-card:nth-child(1) { animation-delay: 0.1s; }
+.luxury-product-card:nth-child(2) { animation-delay: 0.2s; }
+.luxury-product-card:nth-child(3) { animation-delay: 0.3s; }
+.luxury-product-card:nth-child(4) { animation-delay: 0.4s; }
+.luxury-product-card:nth-child(5) { animation-delay: 0.5s; }
+.luxury-product-card:nth-child(6) { animation-delay: 0.6s; }
+</style>
+
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+{% endblock body %}

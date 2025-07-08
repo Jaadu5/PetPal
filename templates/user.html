@@ -1,0 +1,360 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+    {% block styles %}
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Inter', sans-serif;
+                background: linear-gradient(135deg, #f8f6f0 0%, #e8e2d5 100%);
+                min-height: 100vh;
+                color: #2c3e50;
+                line-height: 1.6;
+            }
+
+            .luxury-container {
+                max-width: 900px;
+                margin: 40px auto;
+                padding: 0 20px;
+            }
+
+            .profile-card {
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                border-radius: 24px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                border: 1px solid rgba(212, 175, 55, 0.2);
+            }
+
+            .card-header {
+                background: linear-gradient(135deg, #1a365d 0%, #2d5a87 100%);
+                padding: 40px;
+                text-align: center;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .card-header::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+                animation: shimmer 3s ease-in-out infinite;
+            }
+
+            @keyframes shimmer {
+                0%, 100% { transform: rotate(0deg); }
+                50% { transform: rotate(5deg); }
+            }
+
+            .profile-icon {
+                width: 80px;
+                height: 80px;
+                background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 20px;
+                box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+                position: relative;
+                z-index: 1;
+            }
+
+            .profile-icon i {
+                font-size: 36px;
+                color: #1a365d;
+            }
+
+            .card-title {
+                font-family: 'Playfair Display', serif;
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: #ffffff;
+                margin-bottom: 10px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .card-subtitle {
+                font-family: 'Inter', sans-serif;
+                font-size: 1.1rem;
+                color: rgba(255, 255, 255, 0.8);
+                font-weight: 300;
+                position: relative;
+                z-index: 1;
+            }
+
+            .profile-content {
+                padding: 50px 40px;
+            }
+
+            .details-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 40px;
+                background: rgba(255, 255, 255, 0.8);
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            }
+
+            .details-table th,
+            .details-table td {
+                padding: 20px 25px;
+                text-align: left;
+                border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+            }
+
+            .details-table th {
+                background: linear-gradient(135deg, #1a365d 0%, #2d5a87 100%);
+                color: #ffffff;
+                font-family: 'Inter', sans-serif;
+                font-weight: 600;
+                font-size: 1rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .details-table td {
+                font-family: 'Inter', sans-serif;
+                font-size: 1rem;
+                color: #2c3e50;
+                font-weight: 400;
+                transition: background-color 0.3s ease;
+            }
+
+            .details-table tbody tr:hover {
+                background: rgba(248, 246, 240, 0.7);
+            }
+
+            .details-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            .field-label {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: 600;
+                color: #1a365d;
+            }
+
+            .field-icon {
+                color: #d4af37;
+                font-size: 16px;
+                width: 20px;
+            }
+
+            .actions-section {
+                border-top: 1px solid rgba(212, 175, 55, 0.2);
+                padding-top: 30px;
+                text-align: center;
+            }
+
+            .actions-title {
+                font-family: 'Playfair Display', serif;
+                font-size: 1.8rem;
+                font-weight: 600;
+                color: #1a365d;
+                margin-bottom: 30px;
+            }
+
+            .btn-group {
+                display: flex;
+                gap: 20px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .luxury-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 16px 32px;
+                background: linear-gradient(135deg, #1a365d 0%, #2d5a87 100%);
+                color: #ffffff;
+                text-decoration: none;
+                border-radius: 50px;
+                font-family: 'Inter', sans-serif;
+                font-weight: 500;
+                font-size: 1rem;
+                transition: all 0.3s ease;
+                border: 2px solid transparent;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .luxury-btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.5s ease;
+            }
+
+            .luxury-btn:hover::before {
+                left: 100%;
+            }
+
+            .luxury-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 15px 35px rgba(26, 54, 93, 0.3);
+                border-color: #d4af37;
+            }
+
+            .luxury-btn.secondary {
+                background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+                color: #1a365d;
+            }
+
+            .luxury-btn.secondary:hover {
+                box-shadow: 0 15px 35px rgba(212, 175, 55, 0.3);
+                border-color: #1a365d;
+            }
+
+            .btn-icon {
+                font-size: 16px;
+            }
+
+            @media (max-width: 768px) {
+                .luxury-container {
+                    margin: 20px auto;
+                    padding: 0 15px;
+                }
+
+                .card-header {
+                    padding: 30px 20px;
+                }
+
+                .card-title {
+                    font-size: 2rem;
+                }
+
+                .profile-content {
+                    padding: 30px 20px;
+                }
+
+                .btn-group {
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .luxury-btn {
+                    width: 100%;
+                    max-width: 300px;
+                    justify-content: center;
+                }
+            }
+        </style>
+    {% endblock styles %}
+
+    <div class="luxury-container">
+        <div class="profile-card">
+            <div class="card-header">
+                <div class="profile-icon">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h1 class="card-title">Profile Details</h1>
+                <p class="card-subtitle">Your Personal Information</p>
+            </div>
+            
+            <div class="profile-content">
+                <table class="details-table">
+                    <thead>
+                        <tr>
+                            <th>Field</th>
+                            <th>Information</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="field-label">
+                                    <i class="fas fa-id-card field-icon"></i>
+                                    User ID
+                                </div>
+                            </td>
+                            <td>{{ user.User_id }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="field-label">
+                                    <i class="fas fa-user field-icon"></i>
+                                    First Name
+                                </div>
+                            </td>
+                            <td>{{ user.first_name }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="field-label">
+                                    <i class="fas fa-user field-icon"></i>
+                                    Last Name
+                                </div>
+                            </td>
+                            <td>{{ user.last_name }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="field-label">
+                                    <i class="fas fa-calendar-alt field-icon"></i>
+                                    Date of Birth
+                                </div>
+                            </td>
+                            <td>{{ user.dd }}/{{ user.mm }}/{{ user.yyyy }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="field-label">
+                                    <i class="fas fa-envelope field-icon"></i>
+                                    Email Address
+                                </div>
+                            </td>
+                            <td>{{ user.Email }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="field-label">
+                                    <i class="fas fa-map-marker-alt field-icon"></i>
+                                    Address
+                                </div>
+                            </td>
+                            <td>{{ user.house_number }}, {{ user.street_name }}, Apt {{ user.apt_number }}, {{ user.city }}, {{ user.state }}, {{ user.pincode }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="actions-section">
+                    <h2 class="actions-title">Quick Actions</h2>
+                    <div class="btn-group">
+                        <a href="/view_order" class="luxury-btn">
+                            <i class="fas fa-shopping-bag btn-icon"></i>
+                            View Previous Orders
+                        </a>
+                        <a href="/previous_services" class="luxury-btn secondary">
+                            <i class="fas fa-concierge-bell btn-icon"></i>
+                            View Previous Services
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}
